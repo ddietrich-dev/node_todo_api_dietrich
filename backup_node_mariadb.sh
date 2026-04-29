@@ -2,7 +2,7 @@
 
 TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
 BACKUP_DIR="/var/www/html/projects/node_mariadb/backups"
-DB_NAME="node_db"
+DB_NAME="node_todo_api_dietrich"
 DB_USER="dando"
 BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_backup_$TIMESTAMP.sql"
 
