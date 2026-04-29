@@ -1,0 +1,1 @@
+Backup erstellt: /var/www/html/projects/node_mariadb/backups/node_db_backup_2026-04-29_14-30-01.sql
