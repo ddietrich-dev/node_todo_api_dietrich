@@ -1,1 +1,5 @@
 Backup erstellt: /var/www/html/projects/node_mariadb/backups/node_db_backup_2026-04-29_14-30-01.sql
+mysqldump: Got error: 1049: "Unknown database 'node_todo_api_dietrich'" when selecting the database
+Backup erstellt: /var/www/html/projects/node_mariadb/backups/node_todo_api_dietrich_backup_2026-04-30_14-30-01.sql
+mysqldump: Got error: 1049: "Unknown database 'node_todo_api_dietrich'" when selecting the database
+Backup erstellt: /var/www/html/projects/node_mariadb/backups/node_todo_api_dietrich_backup_2026-05-01_14-30-01.sql
