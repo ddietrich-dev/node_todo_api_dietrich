@@ -16,27 +16,29 @@ app.get('/', (req, res) => {
     res.send('Hello express!');
 });
 
-// Get all todos
+// GET all todos
 app.get('/api/todos', async (req, res) => {
   let conn;
+
   try {
     conn = await pool.getConnection();
     const todos = await conn.query('SELECT * FROM todo');
     res.status(200).json(todos);
   } catch (error) {
-    console.error('Datenbankfehler:', error);
-    res.status(500).json({ error: 'Serverfehler' });
+     console.error('Datenbankfehler:', error);
+     res.status(500).json({ error: 'Serverfehler' });
   } finally {
-    if (conn) conn.release();
+     if (conn) conn.release();
   }
 });
 
-// Create new todo
+// POST (create) new todo
 app.post('/api/todos', async (req, res) => {
   if (!req.body || !req.body.title) {
     return res.status(400).json({ error: 'Titel ist erforderlich' });
   }
   const { title } = req.body;
+
   let conn;
   try {
     conn = await pool.getConnection();
@@ -45,6 +47,79 @@ app.post('/api/todos', async (req, res) => {
       [title]
     );
     res.status(201).json({ id: result.insertId, title, completed: false });
+  } catch (error) {
+     console.error('Datenbankfehler:', error);
+     res.status(500).json({ error: 'Serverfehler' });
+  } finally {
+     if (conn) conn.release();
+  }
+});
+
+// UPDATE todo
+// 1. PATCH (updates only fields which request sends)
+app.patch('/api/todos/:id', async (req, res) => {
+  if (!req.body || (!req.body.title && !req.body.completed)) {
+    return res.status(400).json({ error: 'Titel oder completed Status ist erforderlich' });
+  }
+  const { id } = req.params;
+  const { title, completed } = req.body;
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(
+      'UPDATE todo SET task = ?, completed = ? WHERE id = ?',
+      [title, completed, id]
+    );
+    res.status(200).json({ message: 'ToDo erfolgreich aktualisiert.', title, completed, id });
+  } catch (error) {
+     console.error('Datenbankfehler:', error);
+     res.status(500).json({ error: 'Serverfehler' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// 2. PUT (updates the whole data set including filling empty fields with 'null' or default values)
+app.put('/api/todos/:id', async (req, res) => {
+  if (!req.body || !req.body.title || !req.body.completed) {
+    return res.status(400).json({ error: 'Titel, completed Status und id sind erforderlich' });
+  }
+  const { id } = req.params;
+  const { title, completed } = req.body;
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(
+      'UPDATE todo SET task = ?, completed = ? WHERE id = ?',
+      [title, completed, id]
+    );
+    res.status(200).json({ message: 'Ganzer Datensatz erfolgreich aktualisiert.', title, completed, id});
+  } catch (error) {
+    console.error('Datenbankfehler:', error);
+    res.status(500).json({ error: 'Serverfehler' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// DELETE
+app.delete('/api/todos/:id', async (req, res) => {
+  if (!req.params.id) {
+    return res.status(400).json({ error: 'Die ID ist erforderlich' });
+  }
+  
+  const { id } = req.params;
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(
+      'DELETE FROM todo WHERE id = ?',
+      [id]
+    );
+    res.status(200).json({ message: 'ToDo erfolgreich gelöscht', id });
   } catch (error) {
     console.error('Datenbankfehler:', error);
     res.status(500).json({ error: 'Serverfehler' });
