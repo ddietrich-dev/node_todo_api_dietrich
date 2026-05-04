@@ -3,6 +3,7 @@ import * as mariadb from 'mariadb';
 import 'dotenv/config';
 import pool from './pool.js';
 import express from 'express';
+import cors from 'cors';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // for parsing application/json
 app.use(express.json());
+
 app.get('/', (req, res) => {
     res.send('Hello express!');
 });
